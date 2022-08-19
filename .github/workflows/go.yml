@@ -1,0 +1,98 @@
+name: Go
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.17
+        
+        
+
+    - name: Git clone cable
+      run:
+        mkdir develop && cd develop && git clone https://${{ secrets.CABLE_TOKEN }}@github.com/cdle/cable.git
+        
+    - name: Git clone qinglong
+      run:
+        cd develop && git clone https://${{ secrets.CABLE_TOKEN }}@github.com/cdle/qinglong.git
+        
+    - name: Git clone jd_price
+      run:
+        cd develop && git clone https://github.com/cdle/jd_price.git
+        
+    - name: Git clone jd_cookie
+      run:
+        cd develop && git clone https://${{ secrets.CHESS }}@github.com/ufuckee/jd_cookie.git
+        
+    - name: Create dev.go
+      run:
+        mv dev.go.demo dev.go
+
+    - name: Push to binary
+      run: |
+        n=$(date +%s%3N)
+        echo "package core" > core/compile_time.go
+        echo "var compiled_at = \"$n\"" >> core/compile_time.go
+        GOOS=linux GOARCH=arm64 go build -ldflags "-s -w" -o sillyGirl_linux_arm64
+        GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o sillyGirl_linux_amd64
+        GOOS=windows GOARCH=amd64 go build -ldflags "-s -w" -o sillyGirl_windows_amd64.exe
+        git clone https://${{ secrets.CABLE_TOKEN }}@github.com/cdle/binary.git
+        git config --global user.email "you@example.com"
+        git config --global user.name "Your Name"
+        cd binary
+        git checkout --orphan latest_branch
+        git add -A
+        git commit -am "commit message"
+        git branch -D main
+        git branch -m main
+        git push -f origin main
+        cd ..
+        rm -rf binary/*
+        cp sillyGirl_linux_amd64 binary/sillyGirl_linux_amd64_$n 
+        cp sillyGirl_linux_arm64 binary/sillyGirl_linux_arm64_$n
+        cp sillyGirl_windows_amd64.exe binary/sillyGirl_linux_windows_$n.exe
+        cp core/compile_time.go  binary/compile_time.go
+        cd binary
+        git add . && git commit -m "update"
+        git push --set-upstream origin main
+        wget -q -O - "${{ secrets.VERSION }}$n"
+
+    - name: Upload to release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: sillyGirl_linux_amd64
+        asset_name: sillyGirl_linux_amd64
+        tag: ${{ github.ref }}
+        overwrite: true
+    
+    - name: Upload to release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: sillyGirl_windows_amd64.exe
+        asset_name: sillyGirl_windows_amd64.exe
+        tag: ${{ github.ref }}
+        overwrite: true
+
+    - name: Upload to release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: sillyGirl_linux_arm64
+        asset_name: sillyGirl_linux_arm64
+        tag: ${{ github.ref }}
+        overwrite: true
+    
