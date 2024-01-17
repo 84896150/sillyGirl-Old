@@ -9,9 +9,7 @@ replace gorm.io/driver/sqlite => github.com/go-gorm/sqlite v1.2.6
 replace gorm.io/gorm => github.com/go-gorm/gorm v1.22.5
 
 require (
-	github.com/EDDYCJY/fake-useragent v0.2.0
 	github.com/Han-Ya-Jun/qrcode2console v0.0.0-20190430081741-6890f5f0fdf5
-	github.com/PuerkitoBio/goquery v1.8.0
 	github.com/astaxie/beego v1.12.3
 	github.com/axgle/mahonia v0.0.0-20180208002826-3358181d7394
 	github.com/beego/beego/v2 v2.0.1
@@ -20,7 +18,6 @@ require (
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/disintegration/imaging v1.6.2 // indirect
 	github.com/dop251/goja v0.0.0-20211203105952-bf6af58bbcc8
-	github.com/eatmoreapple/openwechat v1.0.7
 	github.com/gin-gonic/gin v1.7.0
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/uuid v1.1.1
@@ -37,7 +34,5 @@ require (
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/tucnak/telebot.v2 v2.4.0
 	gopkg.in/yaml.v2 v2.4.0
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
-	gorm.io/driver/sqlite v0.0.0-00010101000000-000000000000
-	gorm.io/gorm v1.22.3
+	gopkg.in/yaml.v3 v3.0.0 // indirect
 )
